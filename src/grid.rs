@@ -10,7 +10,7 @@
 /// let grid = Grid { grid_points };
 /// ```
 ///
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq)]
 pub struct Grid {
     pub grid_points: Vec<f64>,
 }

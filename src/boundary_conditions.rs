@@ -104,7 +104,7 @@ mod tests {
     }
 
     #[test]
-    fn test_debug() {
+    fn test_boundary_conditions_debug() {
         let left_bc = 0.0;
         let right_bc = 1.0;
         let bcs = BoundaryConditions::new_dirichlet_bcs(left_bc, right_bc);
@@ -116,7 +116,7 @@ mod tests {
     }
 
     #[test]
-    fn test_clone() {
+    fn test_boundary_conditions_clone() {
         let left_bc = 0.0;
         let right_bc = 1.0;
         let bcs = BoundaryConditions::new_dirichlet_bcs(left_bc, right_bc);
