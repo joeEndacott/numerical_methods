@@ -24,7 +24,7 @@
 /// ## Todo
 /// Add support for more boundary conditions.
 ///
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq)]
 pub struct BoundaryConditions {
     pub left_bc: f64,
     pub right_bc: f64,
@@ -54,30 +54,6 @@ impl BoundaryConditions {
 #[cfg(test)]
 mod tests {
     use super::*;
-
-    #[test]
-    fn test_struct_initialization() {
-        // Tests standard BCs
-        let left_bc = 0.0;
-        let right_bc = 1.0;
-        let bcs = BoundaryConditions { left_bc, right_bc };
-        assert_eq!(bcs.left_bc, left_bc);
-        assert_eq!(bcs.right_bc, right_bc);
-
-        // Tests BCs with negative values
-        let left_bc = -1.0;
-        let right_bc = -2.0;
-        let bcs = BoundaryConditions { left_bc, right_bc };
-        assert_eq!(bcs.left_bc, left_bc);
-        assert_eq!(bcs.right_bc, right_bc);
-
-        // Tests BCs with small values
-        let left_bc = 1e-6;
-        let right_bc = 1e-7;
-        let bcs = BoundaryConditions { left_bc, right_bc };
-        assert_eq!(bcs.left_bc, left_bc);
-        assert_eq!(bcs.right_bc, right_bc);
-    }
 
     #[test]
     fn test_new_dirichlet_bcs() {
@@ -123,6 +99,20 @@ mod tests {
         let cloned_bcs = bcs.clone();
         assert_eq!(cloned_bcs.left_bc, left_bc);
         assert_eq!(cloned_bcs.right_bc, right_bc);
+    }
+
+    #[test]
+    fn test_boundary_conditions_partial_eq() {
+        let left_bc = 0.0;
+        let right_bc = 1.0;
+        let bcs = BoundaryConditions::new_dirichlet_bcs(left_bc, right_bc);
+
+        // Tests equality with itself
+        assert_eq!(bcs, bcs, "Equality failed with itself.");
+
+        // Tests equality with a clone
+        let cloned_bcs = bcs.clone();
+        assert_eq!(bcs, cloned_bcs, "Equality failed with a clone.");
     }
 
     #[test]
