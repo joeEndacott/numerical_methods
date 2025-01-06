@@ -22,6 +22,12 @@ impl Grid {
     /// `new_uniform_grid` creates a uniform `Grid` of `num_points` points
     /// between `start_point` and `end_point` inclusive.
     ///
+    /// If `start_point` is greater than or equal to `end_point` or `num_points`
+    /// is equal to 0, the function returns an empty vector.
+    ///
+    /// If `num_points` is equal to 1, the function returns a vector containing
+    /// only `start_point`.
+    ///
     /// ## Example use case
     /// Suppose that we want to create a uniform grid with 11 points between
     /// 0.0 and 1.0 inclusive. The code below does this.
@@ -34,8 +40,18 @@ impl Grid {
         end_point: f64,
         num_points: usize,
     ) -> Self {
-        // Error handling for when start_point is greater than or equal to end_point or num_points is less than or equal to 1.
-        if start_point >= end_point || num_points <= 1 {
+        // Error handling for edge case when start_point is greater than or
+        // equal to end_point or num_points is equal to 0.
+        // For this case, the function returns an empty vector.
+        if start_point >= end_point || num_points == 0 {
+            let grid_points: Vec<f64> = vec![];
+            return Grid { grid_points };
+        }
+
+        // Error handling for edge case when num_points is equal to 1.
+        // For this case, the function returns a vector containing only
+        // start_point.
+        if num_points == 1 {
             let grid_points: Vec<f64> = vec![start_point];
             return Grid { grid_points };
         }
