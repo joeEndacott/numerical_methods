@@ -304,6 +304,39 @@ mod tests {
     }
 
     #[test]
+    fn test_scale() {
+        // scales grid_func by 2
+        let grid = Grid::new_uniform_grid(0.0, 1.0, 11);
+        let grid_func = GridFunction::new_constant_grid_function(&grid, 2.0);
+        let scaled_grid_func = grid_func.scale(2.0);
+        assert_eq!(
+            scaled_grid_func.function_values,
+            vec![4.0; 11],
+            "Scaling by 2 failed."
+        );
+
+        // scales grid_func by 0
+        let grid = Grid::new_uniform_grid(0.0, 1.0, 11);
+        let grid_func = GridFunction::new_constant_grid_function(&grid, 2.0);
+        let scaled_grid_func = grid_func.scale(0.0);
+        assert_eq!(
+            scaled_grid_func.function_values,
+            vec![0.0; 11],
+            "Scaling by 0 failed."
+        );
+
+        // scales grid_func by -2
+        let grid = Grid::new_uniform_grid(0.0, 1.0, 11);
+        let grid_func = GridFunction::new_constant_grid_function(&grid, 2.0);
+        let scaled_grid_func = grid_func.scale(-2.0);
+        assert_eq!(
+            scaled_grid_func.function_values,
+            vec![-4.0; 11],
+            "Scaling by -2 failed."
+        );
+    }
+
+    #[test]
     fn test_arithmetic_operations_different_grids() {
         // Case 1: grid_func_1 has more elements than grid_func_2.
         let grid = Grid::new_uniform_grid(0.0, 1.0, 6);
@@ -458,39 +491,6 @@ mod tests {
                 .iter()
                 .all(|&x| x.is_nan()),
             "Division of zero function by zero function failed."
-        );
-    }
-
-    #[test]
-    fn test_scale() {
-        // scales grid_func by 2
-        let grid = Grid::new_uniform_grid(0.0, 1.0, 11);
-        let grid_func = GridFunction::new_constant_grid_function(&grid, 2.0);
-        let scaled_grid_func = grid_func.scale(2.0);
-        assert_eq!(
-            scaled_grid_func.function_values,
-            vec![4.0; 11],
-            "Scaling by 2 failed."
-        );
-
-        // scales grid_func by 0
-        let grid = Grid::new_uniform_grid(0.0, 1.0, 11);
-        let grid_func = GridFunction::new_constant_grid_function(&grid, 2.0);
-        let scaled_grid_func = grid_func.scale(0.0);
-        assert_eq!(
-            scaled_grid_func.function_values,
-            vec![0.0; 11],
-            "Scaling by 0 failed."
-        );
-
-        // scales grid_func by -2
-        let grid = Grid::new_uniform_grid(0.0, 1.0, 11);
-        let grid_func = GridFunction::new_constant_grid_function(&grid, 2.0);
-        let scaled_grid_func = grid_func.scale(-2.0);
-        assert_eq!(
-            scaled_grid_func.function_values,
-            vec![-4.0; 11],
-            "Scaling by -2 failed."
         );
     }
 

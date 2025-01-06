@@ -105,6 +105,11 @@ mod tests {
             grid_func.function_values, expected_values,
             "new_grid_function failed to sample a sin function"
         );
+        assert_eq!(
+            grid_func.function_values.len(),
+            grid.grid_points.len(),
+            "new_grid_function failed to make function_values consistent with grid_points for a sin function"
+        );
 
         // Test with the function 1/x.
         let grid_func = GridFunction::new_grid_function(&grid, |x| 1.0 / x);
@@ -114,10 +119,16 @@ mod tests {
             grid_func.function_values, expected_values,
             "new_grid_function failed to sample the function 1/x"
         );
+        assert_eq!(
+            grid_func.function_values.len(),
+            grid.grid_points.len(),
+            "new_grid_function failed to make function_values consistent with grid_points for a sin function"
+        );
     }
 
     #[test]
     fn test_new_constant_grid_function() {
+        // Test with positive scalar.
         let grid = Grid::new_uniform_grid(0.0, 1.0, 6);
         let scalar = 2.0;
         let grid_func = GridFunction::new_constant_grid_function(&grid, scalar);
@@ -125,26 +136,42 @@ mod tests {
         let expected_values: Vec<f64> = vec![scalar; grid.grid_points.len()];
         assert_eq!(
             grid_func.function_values, expected_values,
-            "constant_grid_function failed."
+            "new_constant_grid_function with non-zero scalar failed."
         );
-    }
-
-    #[test]
-    fn test_empty_grid() {
-        let grid = Grid::new_uniform_grid(0.0, 1.0, 0);
-
-        // Test new_grid_function.
-        let grid_func = GridFunction::new_grid_function(&grid, f64::sin);
-        assert!(
-            grid_func.function_values.is_empty(),
-            "new_grid_function failed with an empty grid."
+        assert_eq!(
+            grid_func.function_values.len(),
+            grid.grid_points.len(),
+            "new_constant_grid_function failed to make function_values consistent with grid_points for a positive scalar"
         );
 
-        // Test new_constant_grid_function
-        let grid_func = GridFunction::new_constant_grid_function(&grid, 2.0);
-        assert!(
-            grid_func.function_values.is_empty(),
-            "new_constant_grid_function failed with an empty grid."
+        // Test with zero scalar.
+        let scalar = 0.0;
+        let grid_func = GridFunction::new_constant_grid_function(&grid, scalar);
+
+        let expected_values: Vec<f64> = vec![scalar; grid.grid_points.len()];
+        assert_eq!(
+            grid_func.function_values, expected_values,
+            "constant_grid_function with zero scalar failed."
+        );
+        assert_eq!(
+            grid_func.function_values.len(),
+            grid.grid_points.len(),
+            "new_constant_grid_function failed to make function_values consistent with grid_points for a zero scalar"
+        );
+
+        // Test with negative scalar.
+        let scalar = -2.0;
+        let grid_func = GridFunction::new_constant_grid_function(&grid, scalar);
+
+        let expected_values: Vec<f64> = vec![scalar; grid.grid_points.len()];
+        assert_eq!(
+            grid_func.function_values, expected_values,
+            "constant_grid_function with negative scalar failed."
+        );
+        assert_eq!(
+            grid_func.function_values.len(),
+            grid.grid_points.len(),
+            "new_constant_grid_function failed to make function_values consistent with grid_points for a negative scalar"
         );
     }
 
@@ -211,6 +238,25 @@ mod tests {
         assert_eq!(
             grid_func_1, grid_func_2,
             "Equality failed with a GridFunction defined using new_grid_function."
+        );
+    }
+
+    #[test]
+    fn test_empty_grid() {
+        let grid = Grid::new_uniform_grid(0.0, 1.0, 0);
+
+        // Test new_grid_function.
+        let grid_func = GridFunction::new_grid_function(&grid, f64::sin);
+        assert!(
+            grid_func.function_values.is_empty(),
+            "new_grid_function failed with an empty grid."
+        );
+
+        // Test new_constant_grid_function
+        let grid_func = GridFunction::new_constant_grid_function(&grid, 2.0);
+        assert!(
+            grid_func.function_values.is_empty(),
+            "new_constant_grid_function failed with an empty grid."
         );
     }
 }
