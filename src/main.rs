@@ -8,7 +8,7 @@ pub mod numerical_integration;
 pub mod quadratic_interpolation;
 
 use boundary_conditions::BoundaryConditions;
-use grid::Grid;
+// use grid::Grid;
 use grid_function::GridFunction;
 
 pub const PI: f64 = std::f64::consts::PI;
@@ -84,14 +84,6 @@ fn main() {
             .map(|x| format!("{:.2}", x))
             .collect::<Vec<_>>()
     );
-
-    // Adds two empty grid functions
-    let grid = Grid::new_uniform_grid(0.0, 1.0, 0);
-    let grid_func_1 = GridFunction::new_constant_grid_function(&grid, 2.0);
-    let grid_func_2 = GridFunction::new_constant_grid_function(&grid, 3.0);
-    let grid_func_sum = grid_func_1.add(&grid_func_2);
-    println!("{:?}", grid.grid_points);
-    println!("{:?}", grid_func_sum.function_values);
 }
 
 fn initial_guess(x: f64) -> f64 {

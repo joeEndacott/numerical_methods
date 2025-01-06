@@ -259,6 +259,13 @@ impl GridFunction {
 
 /// ## Todo
 /// Add tests for arithmetic involving very large and very small numbers.
+/// Quantitatively test floating point errors.
+/// Explicitly test what happens when different grids are used.
+/// Add tests with non-uniform grids.
+/// Add tests for edge cases when one or more of the function_values is
+/// f64::MAx or f64::MIN.
+/// Adding a zero GridFunction does not change the original.
+/// Test identity properties (multiplying by a GridFunction of ones results in the same values, subtracting a GridFunction from itself gives a zero gridFunction, adding a zero GridFunction does not change the original).
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -338,6 +345,11 @@ mod tests {
 
     #[test]
     fn test_arithmetic_operations_different_grids() {
+        // This code tests the edge case where the two GridFunctions have
+        // different Grids.
+        // Case 1 is when grid_func_1 has more elements than grid_func_2.
+        // Case 2 is when grid_func_2 has more elements than grid_func_1.
+
         // Case 1: grid_func_1 has more elements than grid_func_2.
         let grid = Grid::new_uniform_grid(0.0, 1.0, 6);
         let grid_func_1 = GridFunction::new_constant_grid_function(&grid, 4.0);
@@ -419,20 +431,31 @@ mod tests {
 
     #[test]
     fn test_arithmetic_operations_empty_grid_function() {
+        // This code tests the edge case where one or more of the two
+        // GridFunctions are empty.
+        // Case 1 is when both GridFunctions are empty.
+        // Case 2 is when grid_func_1 is empty and grid_func_2 isn't.
+        // Case 3 is when grid_func_2 is empty and grid_func_1 isn't.
+
+        // Case 1: Both GridFunctions are empty.
         let grid = Grid::new_uniform_grid(0.0, 1.0, 0);
         let grid_func_1 = GridFunction::new_constant_grid_function(&grid, 4.0);
         let grid_func_2 = GridFunction::new_constant_grid_function(&grid, 2.0);
 
         // Test addition.
         let grid_func_sum = grid_func_1.add(&grid_func_2);
-        assert_eq!(grid_func_sum.function_values, vec![], "Addition failed.");
+        assert_eq!(
+            grid_func_sum.function_values,
+            vec![],
+            "Case 1 addition failed."
+        );
 
         // Test subtraction.
         let grid_func_difference = grid_func_1.subtract(&grid_func_2);
         assert_eq!(
             grid_func_difference.function_values,
             vec![],
-            "Subtraction failed."
+            "Case 1 subtraction failed."
         );
 
         // Test multiplication.
@@ -440,7 +463,7 @@ mod tests {
         assert_eq!(
             grid_func_product.function_values,
             vec![],
-            "Multiplication failed."
+            "Case 1 multiplication failed."
         );
 
         // Test division.
@@ -448,7 +471,87 @@ mod tests {
         assert_eq!(
             grid_func_quotient.function_values,
             vec![],
-            "Division failed."
+            "Case 1 division failed."
+        );
+
+        // Case 2: grid_func_1 is empty and grid_func_2 isn't.
+        let grid_1 = Grid::new_uniform_grid(0.0, 1.0, 0);
+        let grid_func_1 =
+            GridFunction::new_constant_grid_function(&grid_1, 4.0);
+        let grid_2 = Grid::new_uniform_grid(0.0, 1.0, 6);
+        let grid_func_2 =
+            GridFunction::new_constant_grid_function(&grid_2, 2.0);
+
+        // Test addition.
+        let grid_func_sum = grid_func_1.add(&grid_func_2);
+        assert_eq!(
+            grid_func_sum.function_values,
+            vec![],
+            "Case 2 addition failed."
+        );
+
+        // Test subtraction.
+        let grid_func_difference = grid_func_1.subtract(&grid_func_2);
+        assert_eq!(
+            grid_func_difference.function_values,
+            vec![],
+            "Case 2 subtraction failed."
+        );
+
+        // Test multiplication.
+        let grid_func_product = grid_func_1.multiply(&grid_func_2);
+        assert_eq!(
+            grid_func_product.function_values,
+            vec![],
+            "Case 2 multiplication failed."
+        );
+
+        // Test division.
+        let grid_func_quotient = grid_func_1.divide(&grid_func_2);
+        assert_eq!(
+            grid_func_quotient.function_values,
+            vec![],
+            "Case 2 division failed."
+        );
+
+        // Case 3: grid_func_2 is empty and grid_func_1 isn't.
+        let grid_1 = Grid::new_uniform_grid(0.0, 1.0, 6);
+        let grid_func_1 =
+            GridFunction::new_constant_grid_function(&grid_1, 4.0);
+        let grid_2 = Grid::new_uniform_grid(0.0, 1.0, 0);
+        let grid_func_2 =
+            GridFunction::new_constant_grid_function(&grid_2, 2.0);
+
+        // Test addition.
+        let grid_func_sum = grid_func_1.add(&grid_func_2);
+        assert_eq!(
+            grid_func_sum.function_values,
+            vec![4.0; 6],
+            "Case 3 addition failed."
+        );
+
+        // Test subtraction.
+        let grid_func_difference = grid_func_1.subtract(&grid_func_2);
+        assert_eq!(
+            grid_func_difference.function_values,
+            vec![4.0; 6],
+            "Case 3 subtraction failed."
+        );
+
+        // Test multiplication.
+        let grid_func_product = grid_func_1.multiply(&grid_func_2);
+        assert_eq!(
+            grid_func_product.function_values,
+            vec![0.0; 6],
+            "Case 3 multiplication failed."
+        );
+
+        // Test division.
+        let grid_func_quotient = grid_func_1.divide(&grid_func_2);
+        assert_eq!(
+            grid_func_quotient.function_values,
+            vec![f64::INFINITY; 6],
+            "Case 3 division failed."
         );
     }
 

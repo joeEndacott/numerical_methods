@@ -19,6 +19,10 @@ use crate::grid::Grid;
 /// let grid_func = GridFunction { grid, function_values };
 /// ```
 ///
+/// ## Todo
+/// Add checks to ensure that the length of `function_values` is equal to the
+/// length of `grid_points`.
+///
 #[derive(Debug, Clone, PartialEq)]
 pub struct GridFunction {
     pub grid: Grid,
@@ -89,6 +93,20 @@ impl GridFunction {
     }
 }
 
+/// ## Todo
+/// Test new_grid_function and new_constant_grid_function with extremely large
+/// and small numbers.
+/// Add tests with randomly generated grids.
+/// Once check for the length of `function_values` is implemented, add tests
+/// for when the length of `function_values` is not equal to the length of
+/// `grid_points`.
+/// Implement more tests with discontinuous functions.
+/// Add explicit test that the grid in GridFunction is a clone of the input
+/// grid.
+/// For PartialEq, include a test with slightly perturbed function_values to
+/// ensure the precision of equality checks meets expectations.
+/// Add a test to ensure that new_grid_function and new_constant_grid_function
+/// produce consistent results.
 #[cfg(test)]
 mod tests {
     use super::*;

@@ -113,6 +113,11 @@ mod tests {
         // Tests equality with a clone
         let cloned_bcs = bcs.clone();
         assert_eq!(bcs, cloned_bcs, "Equality failed with a clone.");
+
+        // Tests that two instances with NaN values are not equal.
+        let bcs1 = BoundaryConditions::new_dirichlet_bcs(f64::NAN, 1.0);
+        let bcs2 = BoundaryConditions::new_dirichlet_bcs(f64::NAN, 1.0);
+        assert_ne!(bcs1, bcs2);
     }
 
     #[test]
